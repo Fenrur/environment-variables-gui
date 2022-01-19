@@ -1,0 +1,22 @@
+package fr.fenrur;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
+
+public record EnvironmentVariable(Path sourceFilePath, String key, List<String> value) {
+
+    public EnvironmentVariable {
+        Objects.requireNonNull(sourceFilePath);
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(value);
+    }
+
+    public String toLineFile() {
+        return '"' + key + '"' + "=\"" + toValueLine() + "\"";
+    }
+
+    public String toValueLine() {
+        return String.join(":", value);
+    }
+}

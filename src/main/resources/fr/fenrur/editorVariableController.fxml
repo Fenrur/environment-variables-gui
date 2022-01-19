@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="pane" maxWidth="789.0" minHeight="330" minWidth="789.0" onKeyPressed="#onKeyPressed"
+          prefHeight="376.0" prefWidth="789.0" xmlns="http://javafx.com/javafx/16"
+          fx:controller="fr.fenrur.EditorVariableController">
+    <columnConstraints>
+        <ColumnConstraints/>
+        <ColumnConstraints fx:id="column1" maxWidth="192.7402801513672" minWidth="116.35581970214844"
+                           prefWidth="136.64544677734375"/>
+        <ColumnConstraints fx:id="column2"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints fx:id="row1" minHeight="10.0" prefHeight="100.0"/>
+        <RowConstraints fx:id="row2" minHeight="10.0" prefHeight="100.0"/>
+        <RowConstraints fx:id="row3" minHeight="10.0" prefHeight="100.0"/>
+        <RowConstraints fx:id="row4" minHeight="10.0" prefHeight="100.0"/>
+    </rowConstraints>
+    <TextField fx:id="keyTextField" GridPane.columnIndex="2">
+        <GridPane.margin>
+            <Insets bottom="10.0" left="14.0" right="23.0" top="10.0"/>
+        </GridPane.margin>
+    </TextField>
+    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+        <padding>
+            <Insets left="10.0"/>
+        </padding>
+        <Button fx:id="browseDirectoryButton" focusTraversable="false" mnemonicParsing="false"
+                onMouseClicked="#onMouseClickedBrowseDirectoryButton" prefWidth="120.0" text="browse directory"/>
+    </HBox>
+    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <padding>
+            <Insets left="10.0"/>
+        </padding>
+        <Label text="Variable value :"/>
+    </HBox>
+    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <padding>
+            <Insets left="10.0"/>
+        </padding>
+        <Label text="File :"/>
+    </HBox>
+    <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets bottom="10.0" left="14.0" right="23.0" top="10.0"/>
+        </GridPane.margin>
+        <center>
+            <TableView fx:id="tableView" focusTraversable="false" prefHeight="200.0" prefWidth="200.0"
+                       BorderPane.alignment="CENTER">
+                <columns>
+                    <TableColumn fx:id="tableColumn" prefWidth="567.4930572509766" text="Value(s)"/>
+                </columns>
+            </TableView>
+        </center>
+    </BorderPane>
+    <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+        <center>
+            <ChoiceBox fx:id="fileChoiceBox" focusTraversable="false" onKeyPressed="#onKeyPressed" prefWidth="10000.0"
+                       BorderPane.alignment="CENTER"/>
+        </center>
+        <GridPane.margin>
+            <Insets bottom="10.0" left="14.0" right="23.0" top="10.0"/>
+        </GridPane.margin>
+    </BorderPane>
+    <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+        <left>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="171.0" BorderPane.alignment="CENTER">
+                <children>
+                    <Button fx:id="browseFileButton" focusTraversable="false" mnemonicParsing="false"
+                            onMouseClicked="#onMouseClickedBrowseFileButton" prefWidth="120.0" text="browse file"/>
+                </children>
+            </HBox>
+        </left>
+        <right>
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="406.0" spacing="10.0"
+                  BorderPane.alignment="CENTER">
+                <children>
+                    <Button fx:id="addButton" focusTraversable="false" mnemonicParsing="false"
+                            onMouseClicked="#onMouseClickedAddButton" prefWidth="100.0" text="add"/>
+                    <Button fx:id="removeButton" focusTraversable="false" mnemonicParsing="false"
+                            onMouseClicked="#onMouseClickedRemoveButton" prefWidth="100.0" text="remove"/>
+                    <Button fx:id="okButton" focusTraversable="false" mnemonicParsing="false"
+                            onMouseClicked="#onMouseClickedOkButton" prefWidth="100.0" text="ok"/>
+                    <Button fx:id="cancelButton" focusTraversable="false" mnemonicParsing="false"
+                            onMouseClicked="#onMouseClickedCancelButton" prefWidth="100.0" text="cancel"/>
+                </children>
+            </HBox>
+        </right>
+        <GridPane.margin>
+            <Insets bottom="10.0" left="14.0" right="23.0" top="10.0"/>
+        </GridPane.margin>
+    </BorderPane>
+    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+        <padding>
+            <Insets left="10.0"/>
+        </padding>
+        <children>
+            <Label text="Variable key :"/>
+        </children>
+    </HBox>
+</GridPane>
