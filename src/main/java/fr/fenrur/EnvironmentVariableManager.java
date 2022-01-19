@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -24,9 +25,6 @@ public class EnvironmentVariableManager {
             Pattern.compile("export '(.*?)'=\"(.*?)\""),
             Pattern.compile("export (.*?)=(.*?)")
     );
-
-    public static void main(String[] args) {
-    }
 
     public static Optional<Matcher> isExportLine(String line) {
         return PATTERNS.stream()
@@ -51,9 +49,20 @@ public class EnvironmentVariableManager {
 
     public static boolean deleteVariable(EnvironmentVariable variable) {
         try {
-            final List<String> linesFrom = Files.readAllLines(variable.sourceFilePath());
-            linesFrom.removeIf(line -> line.startsWith("export " + variable.toLineFile()));
-            Files.write(variable.sourceFilePath(), linesFrom);
+            final List<String> lines = Files.readAllLines(variable.sourceFilePath());
+            final Iterator<String> iterator = lines.iterator();
+            while (iterator.hasNext()) {
+                final String next = iterator.next();
+                final Optional<Matcher> exportLine = isExportLine(next);
+                if (exportLine.isPresent()) {
+                    final Matcher matcher = exportLine.get();
+                    if (matcher.group(1).equals(variable.key()) && matcher.group(2).equals(variable.toValueLine())) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+            }
+            Files.write(variable.sourceFilePath(), lines);
             return true;
         } catch (IOException e) {
             e.printStackTrace();

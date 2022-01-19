@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -114,10 +114,10 @@ public class Main extends Application {
         setWindowSizing(stage, controller.pane);
     }
 
-    public static void setWindowSizing(Stage stage, Pane pane) {
-        stage.setHeight(pane.getPrefHeight());
-        stage.setWidth(pane.getPrefWidth());
-        stage.setMinHeight(pane.getMinHeight());
-        stage.setMinWidth(pane.getMinWidth());
+    public static void setWindowSizing(Stage stage, Region region) {
+        stage.setHeight(region.getPrefHeight());
+        stage.setWidth(region.getPrefWidth());
+        stage.setMinHeight(region.getMinHeight());
+        stage.setMinWidth(region.getMinWidth());
     }
 }

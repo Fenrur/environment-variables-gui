@@ -11,7 +11,7 @@ targetCompatibility = 17
 mainClassName = 'fr.fenrur.Main'
 
 group 'fr.fenrur'
-version '1.0'
+version '1.1'
 
 jar {
     manifest {

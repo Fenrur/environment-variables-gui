@@ -45,7 +45,7 @@ public class Controller implements Initializable {
         this.sourcedFilePaths = sourcedFilePaths;
     }
 
-    public static void selectItem0(TableView<EnvironmentVariable> tableView) {
+    public static void selectFirstItem(TableView<EnvironmentVariable> tableView) {
         if (!tableView.getItems().isEmpty()) {
             tableView.getSelectionModel().select(0);
         }
@@ -85,7 +85,7 @@ public class Controller implements Initializable {
         addSelectItemListener(tableView, deleteButton, modifyButton, newButton);
         sourcedFilePaths.forEach(path -> tableView.getItems().addAll(EnvironmentVariableManager.findVariablesFrom(path)));
         setTableColumnFactory(variableColumn, valueColumn, fileColumn);
-        selectItem0(tableView);
+        selectFirstItem(tableView);
         pane.heightProperty().addListener((observable, oldValue, newValue) -> resizeRows());
         label.setText(label.getText() + " " + (System.getenv("SUDO_USER") != null ? System.getenv("SUDO_USER") : System.getenv("USER")));
     }
