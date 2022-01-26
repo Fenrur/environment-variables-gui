@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -50,14 +49,19 @@ public class EnvironmentVariableManager {
     public static boolean deleteVariable(EnvironmentVariable variable) {
         try {
             final List<String> lines = Files.readAllLines(variable.sourceFilePath());
-            final Iterator<String> iterator = lines.iterator();
-            while (iterator.hasNext()) {
-                final String next = iterator.next();
+            for (int i = 0; i < lines.size(); i++) {
+                final String next = lines.get(i);
                 final Optional<Matcher> exportLine = isExportLine(next);
                 if (exportLine.isPresent()) {
                     final Matcher matcher = exportLine.get();
                     if (matcher.group(1).equals(variable.key()) && matcher.group(2).equals(variable.toValueLine())) {
-                        iterator.remove();
+                        lines.remove(i);
+                        if (i > 0) {
+                            final String previous = lines.get(i - 1);
+                            if (previous.isBlank()) {
+                                lines.remove(i - 1);
+                            }
+                        }
                         break;
                     }
                 }

@@ -87,7 +87,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            final Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Environment Variables Gui");
             alert.setContentText("App can't execute on Windows");
             alert.getButtonTypes().add(ButtonType.CLOSE);
@@ -95,8 +95,8 @@ public class Main extends Application {
             return;
         }
 
-        Set<Path> sourcedFilePaths = new HashSet<>();
-        List<Path> defaultSourceFilesPaths = DEFAULT_SOURCED_FILE.stream()
+        final Set<Path> sourcedFilePaths = new HashSet<>();
+        final List<Path> defaultSourceFilesPaths = DEFAULT_SOURCED_FILE.stream()
                 .map(filePath -> filePath.replace("~", System.getenv("HOME")))
                 .map(Path::of)
                 .toList();
@@ -105,7 +105,7 @@ public class Main extends Application {
 
         stage = primaryStage;
         primaryStage.setTitle("Environment Variables");
-        FXMLLoader loader = new FXMLLoader(getResource("controller.fxml", getClass()));
+        final FXMLLoader loader = new FXMLLoader(getResource("controller.fxml", getClass()));
         final Controller controller = new Controller(Collections.unmodifiableSet(sourcedFilePaths));
         loader.setControllerFactory(param -> controller);
         primaryStage.setScene(new Scene(loader.load()));

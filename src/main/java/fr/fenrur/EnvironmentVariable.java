@@ -4,12 +4,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-public record EnvironmentVariable(Path sourceFilePath, String key, List<String> value) {
+public record EnvironmentVariable(Path sourceFilePath, String key, List<String> values) {
 
     public EnvironmentVariable {
         Objects.requireNonNull(sourceFilePath);
         Objects.requireNonNull(key);
-        Objects.requireNonNull(value);
+        Objects.requireNonNull(values);
     }
 
     public String toLineFile() {
@@ -17,6 +17,6 @@ public record EnvironmentVariable(Path sourceFilePath, String key, List<String> 
     }
 
     public String toValueLine() {
-        return String.join(":", value);
+        return String.join(":", values);
     }
 }

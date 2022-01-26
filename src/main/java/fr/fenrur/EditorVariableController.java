@@ -47,7 +47,7 @@ public class EditorVariableController implements Initializable {
     public TextField keyTextField;
     public Button addButton;
 
-    private StringBuilder selected = null;
+    private StringBuilder selected;
     private DirectoryChooser directoryChooser;
     private FileChooser fileChooser;
 
@@ -66,10 +66,10 @@ public class EditorVariableController implements Initializable {
     }
 
     public void onMouseClickedOkButton(MouseEvent mouseEvent) {
-        if (verifyCharsAndShowAlertIfNotGood(keyTextField.getText())) return;
+        if (verifyDoubleQuotesAreEscapeAndShowAlertIfNot(keyTextField.getText())) return;
 
         for (StringBuilder item : tableView.getItems()) {
-            if (verifyCharsAndShowAlertIfNotGood(item.toString())) return;
+            if (verifyDoubleQuotesAreEscapeAndShowAlertIfNot(item.toString())) return;
         }
 
         final Stage stage = (Stage) okButton.getScene().getWindow();
@@ -84,7 +84,11 @@ public class EditorVariableController implements Initializable {
             }
         }
 
-        final EnvironmentVariable variable = new EnvironmentVariable(fileChoiceBox.getSelectionModel().getSelectedItem(), keyTextField.getText(), tableView.getItems().stream().map(StringBuilder::toString).filter(s -> !s.isBlank()).toList());
+        final EnvironmentVariable variable = new EnvironmentVariable(
+                fileChoiceBox.getSelectionModel().getSelectedItem(),
+                keyTextField.getText(),
+                tableView.getItems().stream().map(StringBuilder::toString).filter(s -> !s.isBlank()).toList()
+        );
         if (EnvironmentVariableManager.writeVariable(variable)) {
             mainTableView.getItems().add(variable);
             mainTableView.refresh();
@@ -93,13 +97,13 @@ public class EditorVariableController implements Initializable {
         Main.stage.show();
     }
 
-    private boolean verifyCharsAndShowAlertIfNotGood(String value) {
+    private boolean verifyDoubleQuotesAreEscapeAndShowAlertIfNot(String value) {
         final char[] chars = value.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == '"' && (i == 0 || chars[i - 1] != '\\')) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
+                final Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Environment Variables Gui");
-                alert.setContentText("The value: " + value + " need to escape (\") with (\\) before");
+                alert.setContentText("The values: " + value + " need to escape (\") with (\\) before");
                 alert.getButtonTypes().add(ButtonType.CLOSE);
                 alert.showAndWait();
                 return true;
@@ -173,7 +177,7 @@ public class EditorVariableController implements Initializable {
         if (from.isPresent()) {
             final EnvironmentVariable environmentVariable = from.get();
             keyTextField.setText(environmentVariable.key());
-            tableView.getItems().addAll(environmentVariable.value().stream().map(StringBuilder::new).toList());
+            tableView.getItems().addAll(environmentVariable.values().stream().map(StringBuilder::new).toList());
             fileChoiceBox.setValue(environmentVariable.sourceFilePath());
         }
 
