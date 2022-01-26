@@ -8,11 +8,11 @@
 name: Gradle Package
 
 on:
-  release:
-    types: [created]
+  push:
+    branches: master
 
 jobs:
-  build:
+  jpackage:
 
     runs-on: ubuntu-latest
     permissions:
@@ -29,7 +29,7 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Build with Gradle
+    - name: JPackage with Gradle
       uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
       with:
         arguments: build
