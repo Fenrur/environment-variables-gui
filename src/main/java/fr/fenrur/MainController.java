@@ -1,5 +1,6 @@
 package fr.fenrur;
 
+//import com.jthemedetecor.OsThemeDetector;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +23,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class Controller implements Initializable {
+public class MainController implements Initializable {
 
     public static int ROW = 50;
 
@@ -41,33 +42,32 @@ public class Controller implements Initializable {
     public RowConstraints row2;
     public RowConstraints row3;
 
-    public Controller(Set<Path> sourcedFilePaths) {
+    public MainController(Set<Path> sourcedFilePaths) {
         this.sourcedFilePaths = sourcedFilePaths;
     }
 
-    public static void selectFirstItem(TableView<EnvironmentVariable> tableView) {
+    public void selectFirstItem() {
         if (!tableView.getItems().isEmpty()) {
             tableView.getSelectionModel().select(0);
         }
     }
 
-    public static void setTableColumnFactory(TableColumn<EnvironmentVariable, String> columnVariable, TableColumn<EnvironmentVariable, String> columnValue, TableColumn<EnvironmentVariable, String> columnFile) {
-        columnVariable.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().key()));
-        columnValue.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().toValueLine()));
-        columnFile.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().sourceFilePath().toAbsolutePath().toString()));
+    public void setTableColumnFactory() {
+        variableColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().key()));
+        valueColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().toValueLine()));
+        fileColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().sourceFilePath().toAbsolutePath().toString()));
     }
 
-    public static void addSelectItemListener(TableView<EnvironmentVariable> tableView, Button deleteButton, Button modifyButton, Button newButton) {
+    public void addSelectItemListener() {
         tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             final boolean disable = !Files.isWritable(newValue.sourceFilePath());
             deleteButton.setDisable(disable);
             modifyButton.setDisable(disable);
             newButton.setDisable(!Files.isWritable(tableView.getItems().get(0).sourceFilePath()));
-            System.out.println(newValue);
         });
     }
 
-    public static void addResizeListener(TableView<EnvironmentVariable> tableView, TableColumn<EnvironmentVariable, String> variableColumn, TableColumn<EnvironmentVariable, String> valueColumn, TableColumn<EnvironmentVariable, String> fileColumn) {
+    public void addResizeListener() {
         Platform.runLater(() -> tableView.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> {
             final double factor = newSceneWidth.doubleValue() / oldSceneWidth.doubleValue();
             final double newSizeWidthKeyColumn = variableColumn.getWidth() * factor;
@@ -80,14 +80,14 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        addResizeListener(tableView, variableColumn, valueColumn, fileColumn);
-        tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        addSelectItemListener(tableView, deleteButton, modifyButton, newButton);
+        addResizeListener();
+        addSelectItemListener();
         sourcedFilePaths.forEach(path -> tableView.getItems().addAll(EnvironmentVariableManager.findVariablesFrom(path)));
-        setTableColumnFactory(variableColumn, valueColumn, fileColumn);
-        selectFirstItem(tableView);
+        setTableColumnFactory();
+        selectFirstItem();
         pane.heightProperty().addListener((observable, oldValue, newValue) -> resizeRows());
         label.setText(label.getText() + " " + (System.getenv("SUDO_USER") != null ? System.getenv("SUDO_USER") : System.getenv("USER")));
+        Main.setWindowSizing(Main.stage, pane);
     }
 
     public void onDeleteButtonClicked(MouseEvent mouseEvent) {
@@ -99,38 +99,45 @@ public class Controller implements Initializable {
     }
 
     public void onNewButtonClicked(MouseEvent mouseEvent) throws IOException {
-        final FXMLLoader loader = new FXMLLoader(Main.getResource("editorVariableController.fxml", getClass()));
-
         final EditorVariableController editorVariableController = new EditorVariableController(
                 tableView,
                 sourcedFilePaths,
-                Optional.empty());
-        loader.setControllerFactory(param -> editorVariableController);
-        final Scene scene = new Scene(loader.load());
+                null);
+
         final Stage stage = new Stage();
-        stage.setScene(scene);
         stage.setTitle("New variable");
-        Main.stage.hide();
+
+        Main.updateStageFromFXML(stage, "editor_variable_controller.fxml", editorVariableController, isDark -> {
+            if (isDark) {
+                editorVariableController.pane.setStyle("-fx-background-color: #303030");
+            } else {
+                editorVariableController.pane.setStyle("-fx-background-color: #FFFFFF");
+            }
+        });
+
         stage.show();
-        Main.setWindowSizing(stage, editorVariableController.pane);
+        Main.stage.hide();
     }
 
     public void onModifyButtonClicked(MouseEvent mouseEvent) throws IOException {
-        final FXMLLoader loader = new FXMLLoader(Main.getResource("editorVariableController.fxml", getClass()));
-
         final EditorVariableController editorVariableController = new EditorVariableController(
                 tableView,
                 sourcedFilePaths,
-                Optional.ofNullable(tableView.getSelectionModel().getSelectedItem())
+                tableView.getSelectionModel().getSelectedItem()
         );
-        loader.setControllerFactory(param -> editorVariableController);
-        final Scene scene = new Scene(loader.load());
         final Stage stage = new Stage();
-        stage.setScene(scene);
         stage.setTitle("Modify variable");
-        Main.stage.hide();
+
+        Main.updateStageFromFXML(stage, "editor_variable_controller.fxml", editorVariableController, isDark -> {
+            if (isDark) {
+                editorVariableController.pane.setStyle("-fx-background-color: #303030");
+            } else {
+                editorVariableController.pane.setStyle("-fx-background-color: #FFFFFF");
+            }
+        });
+
         stage.show();
-        Main.setWindowSizing(stage, editorVariableController.pane);
+        Main.stage.hide();
     }
 
     public void resizeRows() {

@@ -9,10 +9,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="pane" minHeight="200.0" minWidth="500" prefHeight="520.0" prefWidth="940.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.fenrur.Controller">
+<GridPane fx:id="pane" minHeight="200.0" minWidth="500" prefHeight="520.0" prefWidth="940.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.fenrur.MainController">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="5.0" percentWidth="5.0" prefWidth="16.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="529.0" minWidth="10.0" percentWidth="90.0" prefWidth="524.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="5.0" percentWidth="5.0" prefWidth="16.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="530.0" minWidth="10.0" percentWidth="90.0" prefWidth="524.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="10.0" percentWidth="5.0" prefWidth="15.0" />
     </columnConstraints>
     <rowConstraints>
@@ -20,11 +20,11 @@
         <RowConstraints fx:id="row2" prefHeight="50.0" vgrow="SOMETIMES" />
         <RowConstraints fx:id="row3" prefHeight="50.0" vgrow="SOMETIMES" />
     </rowConstraints>
-    <TableView fx:id="tableView" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+    <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="variableColumn" prefWidth="122.0" text="Variable" />
-            <TableColumn fx:id="valueColumn" prefWidth="600.0" text="Value" />
-            <TableColumn fx:id="fileColumn" minWidth="0.0" prefWidth="106.0" text="File" />
+            <TableColumn fx:id="valueColumn" prefWidth="493.56964111328125" text="Value" />
+            <TableColumn fx:id="fileColumn" minWidth="0.0" prefWidth="212.43035888671875" text="File" />
         </columns>
     </TableView>
     <Label fx:id="label" prefHeight="18.0" prefWidth="242.0" text="Environment variable for" GridPane.columnIndex="1" />

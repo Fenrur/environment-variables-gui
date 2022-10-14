@@ -2,25 +2,28 @@ package fr.fenrur;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main extends Application {
 
-    private final static List<String> DEFAULT_SOURCED_FILE = List.of(
+    public final static List<String> DEFAULT_SOURCED_FILE = List.of(
             "~/.zshrc",
             "~/.zprofile",
             "~/.profile",
@@ -39,12 +42,10 @@ public class Main extends Application {
             Pattern.compile("source (.*?)")
     );
 
-    public static boolean runByIntellij = false;
     public static Stage stage;
 
     public static void main(String[] args) {
-        runByIntellij = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("--runByIntellij"));
-        Application.launch(args);
+        launch(args);
     }
 
     public static Optional<Matcher> isSourceLine(String line) {
@@ -55,16 +56,7 @@ public class Main extends Application {
     }
 
     public static URL getResource(String resource, Class<?> clazz) {
-        if (runByIntellij) {
-            try {
-                return Paths.get("src/main/resources/", clazz.getPackageName().replace(".", "/"), resource).toUri().toURL();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            return null;
-        } else {
-            return clazz.getResource(resource);
-        }
+        return Objects.requireNonNull(clazz.getResource(resource));
     }
 
     private static void appendAllSourcedFiles(Set<Path> result, List<Path> toCheck) {
@@ -85,7 +77,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) {
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             final Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Environment Variables Gui");
@@ -105,13 +97,37 @@ public class Main extends Application {
 
         stage = primaryStage;
         primaryStage.setTitle("Environment Variables");
-        final FXMLLoader loader = new FXMLLoader(getResource("controller.fxml", getClass()));
-        final Controller controller = new Controller(Collections.unmodifiableSet(sourcedFilePaths));
-        loader.setControllerFactory(param -> controller);
-        primaryStage.setScene(new Scene(loader.load()));
+        final MainController controller = new MainController(Collections.unmodifiableSet(sourcedFilePaths));
+        updateStageFromFXML(stage, "main_controller.fxml", controller, isDark -> {
+            if (isDark) {
+                controller.pane.setStyle("-fx-background-color: #303030");
+            } else {
+                controller.pane.setStyle("-fx-background-color: #FFFFFF");
+            }
+        });
 
         primaryStage.show();
-        setWindowSizing(stage, controller.pane);
+    }
+
+    public static void updateStageFromFXML(Stage stage, String fxmlFileName, Object controller, Consumer<Boolean> isDark) {
+        try {
+            final Parent parent = FXMLLoader.load(getResource(fxmlFileName, Main.class), null, null, param -> controller);
+
+            final Scene scene = new Scene(parent, -1, -1, true, SceneAntialiasing.BALANCED);
+            stage.setScene(scene);
+            final JMetro jMetro = new JMetro();
+            jMetro.setScene(scene);
+
+            Consumer<Boolean> consumer = d -> {
+                isDark.accept(d);
+                jMetro.setStyle(d ? Style.DARK : Style.LIGHT);
+            };
+
+            consumer.accept(true);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void setWindowSizing(Stage stage, Region region) {

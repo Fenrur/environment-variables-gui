@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="pane" maxWidth="789.0" minHeight="330" minWidth="789.0" onKeyPressed="#onKeyPressed"
-          prefHeight="376.0" prefWidth="789.0" xmlns="http://javafx.com/javafx/16"
+          prefHeight="375.0" prefWidth="790.0" xmlns="http://javafx.com/javafx/17"
           fx:controller="fr.fenrur.EditorVariableController">
     <columnConstraints>
         <ColumnConstraints/>
@@ -47,7 +47,7 @@
             <Insets bottom="10.0" left="14.0" right="23.0" top="10.0"/>
         </GridPane.margin>
         <center>
-            <TableView fx:id="tableView" focusTraversable="false" prefHeight="200.0" prefWidth="200.0"
+            <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0"
                        BorderPane.alignment="CENTER">
                 <columns>
                     <TableColumn fx:id="tableColumn" prefWidth="567.4930572509766" text="Value(s)"/>

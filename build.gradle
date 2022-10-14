@@ -1,3 +1,5 @@
+import org.openjfx.gradle.JavaFXPlatform
+
 plugins {
     id 'java'
     id 'application'
@@ -13,6 +15,11 @@ mainClassName = 'fr.fenrur.Main'
 group 'fr.fenrur'
 version '1.2'
 
+application {
+    mainModule = 'fr.fenrur'
+    mainClass = 'fr.fenrur.Main'
+}
+
 jar {
     manifest {
         attributes 'Main-Class': 'fr.fenrur.Main'
@@ -21,10 +28,13 @@ jar {
 
 repositories {
     mavenCentral()
+//    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+//    implementation 'com.github.Dansoftowner:jSystemThemeDetector:3.6'
+    implementation 'org.jfxtras:jmetro:11.6.16'
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
 //    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 

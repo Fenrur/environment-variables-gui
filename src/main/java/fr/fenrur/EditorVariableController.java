@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -27,7 +26,7 @@ public class EditorVariableController implements Initializable {
     public static int ROW = 60;
     private final TableView<EnvironmentVariable> mainTableView;
     private final Set<Path> sourcedFilePaths;
-    private final Optional<EnvironmentVariable> from;
+    private final EnvironmentVariable from;
 
     public GridPane pane;
     public Button browseDirectoryButton;
@@ -51,7 +50,7 @@ public class EditorVariableController implements Initializable {
     private DirectoryChooser directoryChooser;
     private FileChooser fileChooser;
 
-    public EditorVariableController(TableView<EnvironmentVariable> mainTableView, Set<Path> sourcedFilePaths, Optional<EnvironmentVariable> from) {
+    public EditorVariableController(TableView<EnvironmentVariable> mainTableView, Set<Path> sourcedFilePaths, EnvironmentVariable from) {
         this.mainTableView = mainTableView;
         this.sourcedFilePaths = sourcedFilePaths;
         this.from = from;
@@ -72,22 +71,26 @@ public class EditorVariableController implements Initializable {
             if (verifyDoubleQuotesAreEscapeAndShowAlertIfNot(item.toString())) return;
         }
 
-        final Stage stage = (Stage) okButton.getScene().getWindow();
-        stage.close();
+        getStage().close();
 
-        if (from.isPresent()) {
-            final boolean deleted = EnvironmentVariableManager.deleteVariable(from.get());
+        if (from != null) {
+            final boolean deleted = EnvironmentVariableManager.deleteVariable(from);
             if (!deleted) {
                 Main.stage.show();
             } else {
-                mainTableView.getItems().remove(from.get());
+                mainTableView.getItems().remove(from);
             }
         }
 
         final EnvironmentVariable variable = new EnvironmentVariable(
                 fileChoiceBox.getSelectionModel().getSelectedItem(),
                 keyTextField.getText(),
-                tableView.getItems().stream().map(StringBuilder::toString).filter(s -> !s.isBlank()).toList()
+                tableView
+                        .getItems()
+                        .stream()
+                        .map(StringBuilder::toString)
+                        .filter(s -> !s.isBlank())
+                        .toList()
         );
         if (EnvironmentVariableManager.writeVariable(variable)) {
             mainTableView.getItems().add(variable);
@@ -114,8 +117,7 @@ public class EditorVariableController implements Initializable {
 
     public void onMouseClickedCancelButton(MouseEvent mouseEvent) {
         Main.stage.show();
-        final Stage stage = (Stage) okButton.getScene().getWindow();
-        stage.close();
+        getStage().close();
     }
 
     public void onMouseClickedBrowseDirectoryButton(MouseEvent mouseEvent) {
@@ -174,14 +176,14 @@ public class EditorVariableController implements Initializable {
         fileChoiceBox.getItems().addAll(sourcedFilePaths);
         fileChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> refreshDisableButtons());
 
-        if (from.isPresent()) {
-            final EnvironmentVariable environmentVariable = from.get();
-            keyTextField.setText(environmentVariable.key());
-            tableView.getItems().addAll(environmentVariable.values().stream().map(StringBuilder::new).toList());
-            fileChoiceBox.setValue(environmentVariable.sourceFilePath());
+        if (from != null) {
+            keyTextField.setText(from.key());
+            tableView.getItems().addAll(from.values().stream().map(StringBuilder::new).toList());
+            fileChoiceBox.setValue(from.sourceFilePath());
         }
 
         refreshDisableButtons();
+        Main.setWindowSizing(Main.stage, pane);
     }
 
     private void refreshDisableButtons() {
