@@ -8,8 +8,6 @@ build are in `build/jpackage`
 
 [Need JDK 17](https://www.oracle.com/java/technologies/downloads/)
 
-# Screenshots
-
 # Dark Mode
 ![Alt text](screenshot_1.png "Main menu")
 
