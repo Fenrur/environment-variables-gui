@@ -110,7 +110,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public static void updateStageFromFXML(Stage stage, String fxmlFileName, Object controller, Consumer<Boolean> isDark) {
+    public static void updateStageFromFXML(Stage stage, String fxmlFileName, Object controller, Consumer<Boolean> isDarkModeConsumer) {
         try {
             final Parent parent = FXMLLoader.load(getResource(fxmlFileName, Main.class), null, null, param -> controller);
 
@@ -119,13 +119,13 @@ public class Main extends Application {
             final JMetro jMetro = new JMetro();
             jMetro.setScene(scene);
 
-            Consumer<Boolean> customIsDark = d -> {
-                isDark.accept(d);
-                jMetro.setStyle(d ? Style.DARK : Style.LIGHT);
+            Consumer<Boolean> consumer = isDark -> {
+                isDarkModeConsumer.accept(isDark);
+                jMetro.setStyle(isDark ? Style.DARK : Style.LIGHT);
             };
 
-            OsThemeDetector.getDetector().registerListener(customIsDark);
-            customIsDark.accept(OsThemeDetector.getDetector().isDark());
+            OsThemeDetector.getDetector().registerListener(consumer);
+            consumer.accept(OsThemeDetector.getDetector().isDark());
 
         } catch (IOException e) {
             throw new RuntimeException(e);
