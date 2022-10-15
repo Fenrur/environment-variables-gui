@@ -4,4 +4,6 @@ module fr.fenrur {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires org.jfxtras.styles.jmetro;
+    requires com.jthemedetector;
 }

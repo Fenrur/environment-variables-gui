@@ -1,5 +1,6 @@
 package fr.fenrur;
 
+import com.jthemedetecor.OsThemeDetector;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,8 +10,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-//import jfxtras.styles.jmetro.JMetro;
-//import jfxtras.styles.jmetro.Style;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 import java.io.IOException;
 import java.net.URL;
@@ -115,15 +116,16 @@ public class Main extends Application {
 
             final Scene scene = new Scene(parent, -1, -1, true, SceneAntialiasing.BALANCED);
             stage.setScene(scene);
-//            final JMetro jMetro = new JMetro();
-//            jMetro.setScene(scene);
-//
-//            Consumer<Boolean> consumer = d -> {
-//                isDark.accept(d);
-//                jMetro.setStyle(d ? Style.DARK : Style.LIGHT);
-//            };
-//
-//            consumer.accept(true);
+            final JMetro jMetro = new JMetro();
+            jMetro.setScene(scene);
+
+            Consumer<Boolean> customIsDark = d -> {
+                isDark.accept(d);
+                jMetro.setStyle(d ? Style.DARK : Style.LIGHT);
+            };
+
+            OsThemeDetector.getDetector().registerListener(customIsDark);
+            customIsDark.accept(OsThemeDetector.getDetector().isDark());
 
         } catch (IOException e) {
             throw new RuntimeException(e);
