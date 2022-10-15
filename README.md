@@ -8,7 +8,14 @@ build are in `build/jpackage`
 
 [Need JDK 17](https://www.oracle.com/java/technologies/downloads/)
 
-# Screenshot
+# Screenshots
+
+# Dark Mode
 ![Alt text](screenshot_1.png "Main menu")
 
 ![Alt text](screenshot_2.png "Environment variable editor")
+
+# Light Mode
+![Alt text](screenshot_3.png "Main menu")
+
+![Alt text](screenshot_4.png "Environment variable editor")
