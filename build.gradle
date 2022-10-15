@@ -1,10 +1,8 @@
-import org.openjfx.gradle.JavaFXPlatform
-
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.9'
-    id "org.beryx.jlink" version "2.22.0"
+//    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id "org.beryx.jlink" version "2.25.0"
 }
 
 sourceCompatibility = 17
@@ -24,28 +22,52 @@ jar {
     manifest {
         attributes 'Main-Class': 'fr.fenrur.Main'
     }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 repositories {
     mavenCentral()
-//    maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.io' }
+}
+
+def currentOS = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem;
+def platform
+if (currentOS.isWindows()) {
+    platform = 'win'
+} else if (currentOS.isLinux()) {
+    platform = 'linux'
+} else if (currentOS.isMacOsX()) {
+    platform = 'mac'
+}
+
+def javafxVersion = "19"
+
+java {
+    modularity.inferModulePath = true
 }
 
 dependencies {
-//    implementation 'com.github.Dansoftowner:jSystemThemeDetector:3.6'
-    implementation 'org.jfxtras:jmetro:11.6.16'
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+//    implementation ('org.jfxtras:jmetro:11.6.16') {
+//        exclude group: 'org.openjfx', module: 'javafx-base'
+//        exclude group: 'org.openjfx', module: 'javafx-controls'
+//        exclude group: 'org.openjfx', module: 'javafx-graphics'
+//        exclude group: 'org.openjfx', module: 'javafx-fxml'
+//    }
+    implementation "org.openjfx:javafx-base:${javafxVersion}:${platform}"
+    implementation "org.openjfx:javafx-controls:${javafxVersion}:${platform}"
+    implementation "org.openjfx:javafx-graphics:${javafxVersion}:${platform}"
+    implementation "org.openjfx:javafx-fxml:${javafxVersion}:${platform}"
+//    implementation 'com.github.Dansoftowner:jSystemThemeDetector:3.8'
+//    implementation 'org.jfxtras:jmetro:11.6.16'
 }
 
-test {
-//    useJUnitPlatform()
-}
-
-javafx {
-    version = "17"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
-}
+//javafx {
+//    version = "19"
+//    modules = [ 'javafx.controls', 'javafx.fxml' ]
+//}
 
 jlink {
     application.mainModule = "fr.fenrur"
